@@ -74,7 +74,7 @@ console.log(message);
 
 // 06 mencetak Nilai bilangan fibonaci pertama
 
-const n = 10;
+const n = 15;
 {
   let fibArray = [0, 1];
 
