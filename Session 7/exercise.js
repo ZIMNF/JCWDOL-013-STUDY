@@ -1,25 +1,4 @@
-// 06 Exercise - Shooting Game
-
-class Player {
-  constructor(name, health = 100, power = 10) {
-    this.name = name;
-    this.health = health;
-    this.power = power;
-  }
-
-  hit(power) {
-    this.health -= power;
-  }
-
-  useItem(item) {
-    this.health += item.health;
-    this.power += item.power;
-  }
-
-  showStatus() {
-    console.log(`${this.name} (Health => ${this.health}, Power => ${this.power})`);
-  }
-}
+// Exercise - Shooting Game
 
 class ShootingGame {
   constructor(player1, player2) {
@@ -28,52 +7,88 @@ class ShootingGame {
   }
 
   getRandomItem() {
-    const health = Math.random() < 0.5 ? 0 : 10;
-    const power = Math.random() < 0.5 ? 0 : 10;
-    return { health, power };
+    let randomItem = [{ health: 0 }, { health: 10 }, { power: 0 }, { power: 10 }];
+
+    let randomIndex = Math.floor(Math.random() * randomItem.length);
+
+    return randomItem[randomIndex];
   }
 
+  // asumsi: player 1 akan selalu jalan duluan
   start() {
-    let currentPlayer = this.player1;
-    let opponentPlayer = this.player2;
+    while (true) {
+      // Giliran Player 1
+      console.log("=====================");
+      console.log(`Giliran: ${player1.name}`);
 
-    while (currentPlayer.health > 0 && opponentPlayer.health > 0) {
-      console.log("Player Status before shooting:");
+      console.log("=====================");
+      this.player1.showStatus();
+
+      let getItem1 = this.getRandomItem();
+      console.log(`Memperoleh ${JSON.stringify(getItem1)}`);
+      this.player1.useItem(getItem1);
+      this.player2.hit(this.player1.power);
+
       this.player1.showStatus();
       this.player2.showStatus();
 
-      const item1 = this.getRandomItem();
-      const item2 = this.getRandomItem();
-
-      console.log(`${currentPlayer.name} got item:`, item1);
-      console.log(`${opponentPlayer.name} got item:`, item2);
-
-      currentPlayer.useItem(item1);
-      opponentPlayer.useItem(item2);
-
-      console.log("Player Status after shooting:");
-      this.player1.showStatus();
-      this.player2.showStatus();
-
-      opponentPlayer.hit(currentPlayer.power);
-
-      if (opponentPlayer.health <= 0) {
-        console.log(`${currentPlayer.name} wins!`);
+      if (this.player2.health <= 0) {
+        console.log(`${this.player1} Win`);
         break;
       }
 
-      // Swap players for next turn
-      [currentPlayer, opponentPlayer] = [opponentPlayer, currentPlayer];
+      // Giliran Player 2
+      console.log();
+      console.log("=====================");
+      console.log(`Giliran: ${player2.name}`);
+      console.log("=====================");
+      this.player2.showStatus();
+
+      let getItem2 = this.getRandomItem();
+      console.log(`Memperoleh ${JSON.stringify(getItem2)}`);
+      this.player2.useItem(getItem2);
+      this.player1.hit(this.player2.power);
+
+      this.player1.showStatus();
+      this.player2.showStatus();
+
+      if (this.player1.health <= 0) {
+        console.log(`${this.player2} Win`);
+        break;
+      }
     }
   }
 }
 
-// Create players
-const player1 = new Player("Player A");
-const player2 = new Player("Player B");
+class Player {
+  constructor(name) {
+    this.name = name;
+    this.health = 100;
+    this.power = 10;
+  }
 
-// Create shooting game
-const game = new ShootingGame(player1, player2);
+  hit(power) {
+    this.health -= power;
+  }
 
-// Start the game
+  useItem(item) {
+    for (let key in item) {
+      if (key == "health") {
+        this.health += item[key];
+      } else {
+        this.power += item[key];
+      }
+    }
+  }
+
+  showStatus() {
+    console.log(`${this.name} ( Health => ${this.health}, Power => ${this.power} )`);
+  }
+}
+
+let player1 = new Player("anto");
+let player2 = new Player("malabar");
+
+let game = new ShootingGame(player1, player2);
+
 game.start();
